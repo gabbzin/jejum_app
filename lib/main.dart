@@ -1,6 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:jejum_app/core/services/storage_service.dart';
+import 'package:jejum_app/data/models/fasting_session_model.dart';
+import 'package:jejum_app/data/models/meal_model.dart';
+import 'package:jejum_app/data/models/protocol_model.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await StorageService.init();
+
+  StorageService.registerAdapters([
+    FastingSessionModelAdapter(),
+    MealModelAdapter(),
+    ProtocolModelAdapter(),
+  ]);
+
   runApp(const MyApp());
 }
 
