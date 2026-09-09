@@ -1,6 +1,6 @@
 import 'package:jejum_app/domain/entities/protocol.dart';
 
-abstract class ProtocolRepository {
+abstract class IProtocolRepository {
   Future<List<Protocol>> getAll();
 
   Future<Protocol?> getById(String id);

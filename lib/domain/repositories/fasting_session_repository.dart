@@ -1,6 +1,6 @@
 import 'package:jejum_app/domain/entities/fasting_session.dart';
 
-abstract class FastingSessionRepository {
+abstract class IFastingSessionRepository {
   Future<List<FastingSession>> getAll();
 
   Future<FastingSession?> getById(String id);

@@ -1,6 +1,6 @@
 import 'package:jejum_app/domain/entities/meal.dart';
 
-abstract class MealRepository {
+abstract class IMealRepository {
   Future<List<Meal>> getAll();
 
   Future<Meal?> getById(String id);
