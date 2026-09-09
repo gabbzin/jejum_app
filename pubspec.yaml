@@ -30,14 +30,30 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  
+  # Estado
+  flutter_riverpod: ^2.6.1
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  # Persistência local
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+  # Notificações locais
+  flutter_local_notifications: ^18.0.1
+
+  # Gráfico semanal
+  fl_chart: ^0.69.2
+
+  # Ícones
   cupertino_icons: ^1.0.8
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  # Geração de código do Hive (TypeAdapters)
+  hive_generator: ^2.0.1
+  build_runner: ^2.4.13
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
