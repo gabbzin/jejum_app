@@ -4,21 +4,57 @@ import 'package:jejum_app/core/theme/app_theme.dart';
 import 'package:jejum_app/data/models/fasting_session_model.dart';
 import 'package:jejum_app/data/models/meal_model.dart';
 import 'package:jejum_app/data/models/protocol_model.dart';
+import 'package:jejum_app/data/repositories/fasting_session_repository_impl.dart';
+import 'package:jejum_app/data/repositories/meal_repository_impl.dart';
+import 'package:jejum_app/data/repositories/protocol_repository_impl.dart';
+import 'package:jejum_app/domain/use-cases/fasting_session/mutations/end_fasting.dart';
+import 'package:jejum_app/domain/use-cases/fasting_session/mutations/pause_fasting.dart';
+import 'package:jejum_app/domain/use-cases/fasting_session/mutations/resume_fasting.dart';
+import 'package:jejum_app/domain/use-cases/fasting_session/mutations/start_fasting.dart';
+import 'package:jejum_app/domain/use-cases/fasting_session/queries/get_actual.dart';
+import 'package:jejum_app/domain/use-cases/protocol/queries/get_by_id.dart';
+import 'package:jejum_app/presentation/providers/fasting_controller.dart';
+import 'package:jejum_app/presentation/screens/home_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await StorageService.init();
 
-  StorageService.registerAdapters([
-    FastingSessionModelAdapter(),
-    MealModelAdapter(),
-    ProtocolModelAdapter(),
-  ]);
+  StorageService.registerAdapters([FastingSessionModelAdapter(), MealModelAdapter(), ProtocolModelAdapter()]);
 
   await StorageService.openBoxes();
 
-  runApp(const MyApp());
+  final fastingSessionRepo = FastingSessionRepositoryImpl(StorageService.fastingSessionBoxInstance);
+  final mealRepo = MealRepositoryImpl(StorageService.mealBoxInstance);
+  final protocolRepo = ProtocolRepositoryImpl(StorageService.protocolBoxInstance);
+
+  final getActual = GetActualFastingSessionUseCase(fastingSessionRepo);
+  final startSession = StartFastingSessionUseCase(fastingSessionRepo, protocolRepo);
+  final endSession = EndFastingSessionUseCase(fastingSessionRepo);
+  final pauseSession = PauseFastingSessionUseCase(fastingSessionRepo);
+  final resumeSession = ResumeFastingSessionUseCase(fastingSessionRepo);
+
+  final getProtocolById = GetProtocolByIdUseCase(protocolRepo);
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => FastingSessionController(
+            getActual,
+            startSession,
+            pauseSession,
+            resumeSession,
+            endSession,
+            getProtocolById,
+          )..init(),
+        ),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -31,53 +67,9 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.system,
-      home: const MyHomePage(title: 'Deus abençoe o projeto!'),
-    );
-  }
-}
+      home: const HomeScreen(),
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+      // routes: {'/': (context) => const HomeScreen()},
     );
   }
 }
