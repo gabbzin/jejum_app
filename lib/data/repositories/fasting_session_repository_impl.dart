@@ -27,13 +27,13 @@ class FastingSessionRepositoryImpl implements FastingSessionRepository {
   }
 
   @override
-  Future<FastingSession?> getByProtocolId(String protocolId) async {
-    final fastingSession = _box.values.firstWhereOrNull(
-      (element) => element.protocolId == protocolId,
-    );
-    return fastingSession != null
-        ? FastingSessionMapper.toEntity(fastingSession)
-        : null;
+  Future<List<FastingSession?>> getByProtocolId(String protocolId) async {
+    final fastingSessions = _box.values
+        .where((element) => element.protocolId == protocolId)
+        .toList();
+    return fastingSessions.isNotEmpty
+        ? fastingSessions.map(FastingSessionMapper.toEntity).toList()
+        : [];
   }
 
   @override
@@ -50,6 +50,15 @@ class FastingSessionRepositoryImpl implements FastingSessionRepository {
   Future<void> save(FastingSession fastingSession) async {
     final model = FastingSessionMapper.toModel(fastingSession);
     await _box.put(fastingSession.id, model);
+  }
+
+  @override
+  Future<void> cancel(String id) async {
+    final fastingSession = _box.get(id);
+    if (fastingSession != null) {
+      fastingSession.status = FastingStatus.cancelled;
+      await _box.put(id, fastingSession);
+    }
   }
 
   @override
