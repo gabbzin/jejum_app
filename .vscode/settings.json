@@ -9,5 +9,17 @@
     }
   ],
   "java.configuration.updateBuildConfiguration": "interactive",
-  "dart.lineLength": 120
+
+  // Hot Reload do Flutter ao salvar
+  "dart.flutterHotReloadOnSave": "all",
+
+  // Configurações exclusivas para arquivos Dart
+  "[dart]": {
+    "editor.rulers": [120],
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "quickfix.insertSemicolon": "always"
+    }
+  }
 }
