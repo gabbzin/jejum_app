@@ -19,6 +19,7 @@ dependencies:
   injectable: ^3.0.0
   collection: ^1.19.1
   uuid: ^4.6.0
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:
@@ -31,6 +32,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - public/images/logo.jpeg
+    - public/images/logo_icone.png
 
 flutter_launcher_icons:
   android: true
