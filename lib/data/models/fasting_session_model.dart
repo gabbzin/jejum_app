@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:jejum_app/domain/entities/fasting_session.dart';
 
 part 'fasting_session_model.g.dart';
 
@@ -14,12 +15,16 @@ class FastingSessionModel extends HiveObject {
   DateTime startTime;
 
   @HiveField(3)
-  DateTime endTime;
+  DateTime? endTime;
+
+  @HiveField(4)
+  FastingStatus status;
 
   FastingSessionModel({
     required this.id,
     required this.protocolId,
     required this.startTime,
-    required this.endTime,
+    this.endTime,
+    required this.status,
   });
 }
