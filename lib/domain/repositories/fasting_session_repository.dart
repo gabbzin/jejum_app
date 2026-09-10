@@ -5,6 +5,8 @@ abstract class FastingSessionRepository {
 
   Future<FastingSession?> getById(String id);
 
+  Future<List<FastingSession?>> getByDay(DateTime day);
+
   Future<List<FastingSession?>> getByProtocolId(String protocolId);
 
   Future<FastingSession?> getActual();

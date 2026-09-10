@@ -20,8 +20,8 @@ class ResumeFastingSessionUseCase {
       status: FastingStatus.active,
       pausedAt: null,
       totalPausedDuration:
-          session.totalPausedDuration +
-          DateTime.now().difference(session.pausedAt!),
+          session.totalPausedDuration ??
+          Duration.zero + DateTime.now().difference(session.pausedAt!),
     );
     await _repository.save(updatedSession);
   }

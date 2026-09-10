@@ -6,6 +6,7 @@ import "package:jejum_app/data/models/fasting_session_model.dart";
 import "package:jejum_app/domain/repositories/fasting_session_repository.dart";
 import "package:jejum_app/domain/entities/fasting_session.dart";
 import 'package:collection/collection.dart';
+import "package:jejum_app/utils/normalize_to_day.dart";
 
 @LazySingleton(as: FastingSessionRepository)
 class FastingSessionRepositoryImpl implements FastingSessionRepository {
@@ -34,6 +35,16 @@ class FastingSessionRepositoryImpl implements FastingSessionRepository {
     return fastingSessions.isNotEmpty
         ? fastingSessions.map(FastingSessionMapper.toEntity).toList()
         : [];
+  }
+
+  @override
+  Future<List<FastingSession?>> getByDay(DateTime day) async {
+    final normalizedDay = normalizeToDay(day);
+    final sessions = _box.values.where(
+      (session) => normalizeToDay(session.startTime) == normalizedDay,
+    );
+
+    return sessions.map(FastingSessionMapper.toEntity).toList();
   }
 
   @override

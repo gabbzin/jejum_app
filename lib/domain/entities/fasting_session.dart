@@ -1,5 +1,6 @@
 enum FastingStatus { active, paused, finished, cancelled }
 
+// Serve para definir valores não nulos (undefined do TS)
 class _Unset {
   const _Unset();
 }
@@ -10,8 +11,9 @@ class FastingSession {
   final DateTime startTime;
   final DateTime? endTime;
   final DateTime? pausedAt;
-  final Duration totalPausedDuration;
+  final Duration? totalPausedDuration;
   final FastingStatus status;
+  final Duration targetDuration;
 
   const FastingSession({
     required this.id,
@@ -21,6 +23,7 @@ class FastingSession {
     this.pausedAt,
     this.totalPausedDuration = Duration.zero,
     required this.status,
+    required this.targetDuration,
   });
 
   static const _unset = _Unset();
@@ -34,6 +37,7 @@ class FastingSession {
     DateTime? endTime,
     Object? pausedAt = _unset,
     Duration? totalPausedDuration,
+    Duration? targetDuration,
     FastingStatus? status,
   }) {
     return FastingSession(
@@ -43,7 +47,15 @@ class FastingSession {
       endTime: endTime ?? this.endTime,
       pausedAt: pausedAt is _Unset ? this.pausedAt : pausedAt as DateTime?,
       totalPausedDuration: totalPausedDuration ?? this.totalPausedDuration,
+      targetDuration: targetDuration ?? this.targetDuration,
       status: status ?? this.status,
     );
+  }
+
+  bool get reachedGoal {
+    final end = endTime ?? DateTime.now();
+    final elapsed =
+        end.difference(startTime) - (totalPausedDuration ?? Duration.zero);
+    return elapsed >= targetDuration;
   }
 }
