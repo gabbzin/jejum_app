@@ -26,6 +26,9 @@ class FastingSessionModel extends HiveObject {
   @HiveField(6)
   int totalPausedDuration;
 
+  @HiveField(7)
+  int targetDuration;
+
   FastingSessionModel({
     required this.id,
     required this.protocolId,
@@ -34,5 +37,6 @@ class FastingSessionModel extends HiveObject {
     required this.status,
     this.pausedAt,
     this.totalPausedDuration = 0,
+    required this.targetDuration,
   });
 }

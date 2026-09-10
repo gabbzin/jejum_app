@@ -24,13 +24,14 @@ class FastingSessionModelAdapter extends TypeAdapter<FastingSessionModel> {
       status: fields[4] as FastingStatus,
       pausedAt: fields[5] as DateTime?,
       totalPausedDuration: fields[6] as int,
+      targetDuration: fields[7] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, FastingSessionModel obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -44,7 +45,9 @@ class FastingSessionModelAdapter extends TypeAdapter<FastingSessionModel> {
       ..writeByte(5)
       ..write(obj.pausedAt)
       ..writeByte(6)
-      ..write(obj.totalPausedDuration);
+      ..write(obj.totalPausedDuration)
+      ..writeByte(7)
+      ..write(obj.targetDuration);
   }
 
   @override
