@@ -20,11 +20,19 @@ class FastingSessionModel extends HiveObject {
   @HiveField(4)
   FastingStatus status;
 
+  @HiveField(5)
+  DateTime? pausedAt;
+
+  @HiveField(6)
+  int totalPausedDuration;
+
   FastingSessionModel({
     required this.id,
     required this.protocolId,
     required this.startTime,
     this.endTime,
     required this.status,
+    this.pausedAt,
+    this.totalPausedDuration = 0,
   });
 }

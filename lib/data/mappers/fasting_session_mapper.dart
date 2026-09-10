@@ -8,6 +8,8 @@ class FastingSessionMapper {
       protocolId: model.protocolId,
       startTime: model.startTime,
       endTime: model.endTime,
+      pausedAt: model.pausedAt,
+      totalPausedDuration: Duration(milliseconds: model.totalPausedDuration),
       status: model.status,
     );
   }
@@ -19,6 +21,8 @@ class FastingSessionMapper {
       startTime: entity.startTime,
       endTime: entity.endTime,
       status: entity.status,
+      pausedAt: entity.pausedAt,
+      totalPausedDuration: entity.totalPausedDuration.inMilliseconds,
     );
   }
 }
