@@ -5,6 +5,7 @@ import "package:jejum_app/data/models/meal_model.dart";
 import "package:jejum_app/domain/entities/meal.dart";
 
 import 'package:jejum_app/domain/repositories/meal_repository.dart';
+import "package:jejum_app/utils/normalize_to_day.dart";
 
 @LazySingleton(as: MealRepository)
 class MealRepositoryImpl implements MealRepository {
@@ -18,9 +19,13 @@ class MealRepositoryImpl implements MealRepository {
   }
 
   @override
-  Future<Meal?> getById(String id) async {
-    final meal = _box.get(id);
-    return meal != null ? MealMapper.toEntity(meal) : null;
+  Future<List<Meal>> getByDay(DateTime day) async {
+    final normalizedDay = normalizeToDay(day);
+    final meals = _box.values.where(
+      (meal) => normalizeToDay(meal.dateTime) == normalizedDay,
+    );
+
+    return meals.map(MealMapper.toEntity).toList();
   }
 
   @override

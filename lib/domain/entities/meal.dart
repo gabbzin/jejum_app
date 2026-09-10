@@ -12,4 +12,13 @@ class Meal {
   });
 
   DateTime get day => DateTime(time.year, time.month, time.day);
+
+  Meal copyWith({String? name, int? calories, DateTime? time}) {
+    return Meal(
+      id: id,
+      name: name ?? this.name,
+      calories: calories ?? this.calories,
+      time: time ?? this.time,
+    );
+  }
 }
