@@ -8,7 +8,7 @@ class FastingSessionMapper {
       protocolId: model.protocolId,
       startTime: model.startTime,
       endTime: model.endTime,
-      status: FastingStatus.finished,
+      status: model.status,
     );
   }
 
@@ -17,7 +17,8 @@ class FastingSessionMapper {
       id: entity.id,
       protocolId: entity.protocolId,
       startTime: entity.startTime,
-      endTime: entity.endTime ?? DateTime.now(),
+      endTime: entity.endTime,
+      status: entity.status,
     );
   }
 }
