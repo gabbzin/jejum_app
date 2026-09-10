@@ -15,21 +15,21 @@ class Protocol {
 
   static const predefined = [
     Protocol(
-      id: '12:12',
+      id: '12_12',
       name: '12:12',
       fastingHours: 12,
       eatingHours: 12,
       isCustom: false,
     ),
     Protocol(
-      id: '16:8',
+      id: '16_8',
       name: '16:8',
       fastingHours: 16,
       eatingHours: 8,
       isCustom: false,
     ),
     Protocol(
-      id: '18:6',
+      id: '18_6',
       name: '18:6',
       fastingHours: 18,
       eatingHours: 6,
