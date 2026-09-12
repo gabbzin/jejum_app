@@ -3,18 +3,25 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:jejum_app/presentation/providers/fasting_controller.dart';
 import 'package:provider/provider.dart';
 
-class ActionsButtonTimer extends StatefulWidget {
+class ActionsButtonTimer extends StatelessWidget {
   const ActionsButtonTimer({super.key});
 
-  @override
-  State<ActionsButtonTimer> createState() => _ActionsButtonTimerState();
-}
-
-class _ActionsButtonTimerState extends State<ActionsButtonTimer> {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<FastingSessionController>();
     final theme = Theme.of(context);
+
+    if (!controller.isFasting) {
+      return Text(
+        "Sem sessão ativa, inicie uma na janela de protocolos.",
+        style: TextStyle(
+          fontSize: 16,
+          fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+          fontWeight: FontWeight.w700,
+          color: theme.colorScheme.onSurfaceVariant,
+        ),
+      );
+    }
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -22,13 +29,13 @@ class _ActionsButtonTimerState extends State<ActionsButtonTimer> {
       children: [
         // Botão para pausar e retomar o jejum
         ActionButtonTimer(
-          color: controller.isFasting
+          color: !controller.isPaused
               ? theme.colorScheme.primary
               : theme.colorScheme.secondary,
-          label: controller.isFasting ? "Pausar" : "Retomar",
-          icon: controller.isFasting ? Icons.pause : Icons.play_arrow,
+          label: !controller.isPaused ? "Pausar" : "Retomar",
+          icon: !controller.isPaused ? Icons.pause : Icons.play_arrow,
           onPressed: () {
-            if (controller.isFasting) {
+            if (!controller.isPaused) {
               controller.pauseFasting();
             } else {
               controller.resumeFasting();
@@ -41,8 +48,36 @@ class _ActionsButtonTimerState extends State<ActionsButtonTimer> {
           color: Colors.red,
           label: "Encerrar",
           icon: Icons.stop_circle_outlined,
-          onPressed: () {
-            controller.endFasting();
+          onPressed: () async {
+            final bool? confirmation = await showDialog<bool>(
+              context: context,
+              builder: (dialogContext) {
+                return AlertDialog(
+                  title: const Text("Encerrar Jejum"),
+                  content: const Text(
+                    "Tem certeza que deseja encerrar o jejum?",
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(dialogContext).pop(false);
+                      },
+                      child: const Text("Cancelar"),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(dialogContext).pop(true);
+                      },
+                      child: const Text("Encerrar"),
+                    ),
+                  ],
+                );
+              },
+            );
+
+            if (confirmation == true && context.mounted) {
+              context.read<FastingSessionController>().endFasting();
+            }
           },
         ),
       ],
