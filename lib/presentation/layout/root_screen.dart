@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jejum_app/presentation/screens/home_screen.dart';
 import 'package:jejum_app/presentation/screens/meals_screen.dart';
+import 'package:jejum_app/presentation/screens/protocol_screen.dart';
 
 class RootScreen extends StatefulWidget {
   const RootScreen({super.key});
@@ -12,7 +13,11 @@ class RootScreen extends StatefulWidget {
 class _RootScreenState extends State<RootScreen> {
   int _selectedIndex = 0;
 
-  final _screens = [const HomeScreen(), const MealsScreen()];
+  final _screens = [
+    const HomeScreen(),
+    const MealsScreen(),
+    const ProtocolScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +55,10 @@ class _RootScreenState extends State<RootScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.restaurant),
             label: 'Refeições',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.description),
+            label: 'Protocolos',
           ),
         ],
       ),
