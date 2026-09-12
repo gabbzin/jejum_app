@@ -108,13 +108,17 @@ class FastingSessionController extends ChangeNotifier {
 
     final adjustedBaseTime = DateTime.now().subtract(currentSession!.elapsed);
 
-    await NotificationService.showFastingTimerNotification(
-      id: _timerNotificationId,
-      title: "Jejum Ativo",
-      body:
-          "Tempo restante: ${remainingDuration.inHours}h ${remainingDuration.inMinutes.remainder(60)}m",
-      startTime: adjustedBaseTime,
-    );
+    try {
+      await NotificationService.showFastingTimerNotification(
+        id: _timerNotificationId,
+        title: "Jejum Ativo",
+        body:
+            "Tempo restante: ${remainingDuration.inHours}h ${remainingDuration.inMinutes.remainder(60)}m",
+        startTime: adjustedBaseTime,
+      );
+    } catch (_) {
+      // Ignora falhas de notificação em testes ou plataformas sem suporte
+    }
   }
 
   void _startTicker() {
@@ -126,7 +130,7 @@ class FastingSessionController extends ChangeNotifier {
           id: 101,
           title: "Parabéns!",
           body: "Você completou seu protocolo de jejum!",
-        );
+        ).catchError((_) {});
       }
       notifyListeners();
     });
@@ -155,12 +159,16 @@ class FastingSessionController extends ChangeNotifier {
     notifyListeners();
   }
 
+
+
   Future<void> pauseFasting() async {
     if (currentSession == null) return;
     await _pauseSession();
     await _loadSessionAndProtocol();
 
-    await NotificationService.stopTimerNotification(_timerNotificationId);
+    try {
+      await NotificationService.stopTimerNotification(_timerNotificationId);
+    } catch (_) {}
     _stopTicker();
     notifyListeners();
   }
@@ -183,7 +191,9 @@ class FastingSessionController extends ChangeNotifier {
     if (currentSession == null) return;
     await _endSession();
 
-    await NotificationService.stopTimerNotification(_timerNotificationId);
+    try {
+      await NotificationService.stopTimerNotification(_timerNotificationId);
+    } catch (_) {}
     currentSession = null;
     currentProtocol = null;
 
