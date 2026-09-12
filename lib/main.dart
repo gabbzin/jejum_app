@@ -10,14 +10,28 @@ import 'package:jejum_app/data/repositories/meal_repository_impl.dart';
 import 'package:jejum_app/data/repositories/protocol_repository_impl.dart';
 import 'package:jejum_app/data/seeds/protocol_seed.dart';
 import 'package:jejum_app/domain/entities/fasting_session.dart';
+import 'package:jejum_app/domain/use-cases/calculate_daily_summary.dart';
+import 'package:jejum_app/domain/use-cases/fasting_session/mutations/cancel_fasting.dart';
+import 'package:jejum_app/domain/use-cases/fasting_session/mutations/delete_fasting.dart';
 import 'package:jejum_app/domain/use-cases/fasting_session/mutations/end_fasting.dart';
 import 'package:jejum_app/domain/use-cases/fasting_session/mutations/pause_fasting.dart';
 import 'package:jejum_app/domain/use-cases/fasting_session/mutations/resume_fasting.dart';
 import 'package:jejum_app/domain/use-cases/fasting_session/mutations/start_fasting.dart';
 import 'package:jejum_app/domain/use-cases/fasting_session/queries/get_actual.dart';
+import 'package:jejum_app/domain/use-cases/fasting_session/queries/get_all.dart';
+import 'package:jejum_app/domain/use-cases/fasting_session/queries/get_by_id.dart';
+import 'package:jejum_app/domain/use-cases/fasting_session/queries/get_by_protocol_id.dart';
+import 'package:jejum_app/domain/use-cases/meal/mutations/add_meal.dart';
+import 'package:jejum_app/domain/use-cases/meal/mutations/delete_meal.dart';
+import 'package:jejum_app/domain/use-cases/meal/mutations/edit_meal.dart';
+import 'package:jejum_app/domain/use-cases/meal/queries/get_all.dart';
+import 'package:jejum_app/domain/use-cases/meal/queries/get_by_day.dart';
+import 'package:jejum_app/domain/use-cases/protocol/mutations/create_custom_protocol.dart';
+import 'package:jejum_app/domain/use-cases/protocol/mutations/delete_custom_protocol.dart';
+import 'package:jejum_app/domain/use-cases/protocol/queries/get_all.dart';
 import 'package:jejum_app/domain/use-cases/protocol/queries/get_by_id.dart';
+import 'package:jejum_app/presentation/layout/root_screen.dart';
 import 'package:jejum_app/presentation/providers/fasting_controller.dart';
-import 'package:jejum_app/presentation/screens/home_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -52,11 +66,57 @@ void main() async {
   final pauseSession = PauseFastingSessionUseCase(fastingSessionRepo);
   final resumeSession = ResumeFastingSessionUseCase(fastingSessionRepo);
 
+  final cancelSession = CancelSessionUseCase(fastingSessionRepo);
+  final deleteFastingSession = DeleteFastingSessionUseCase(fastingSessionRepo);
+  final getAllFastingSessions = GetAllFastingSessionsUseCase(
+    fastingSessionRepo,
+  );
+  final getFastingSessionById = GetByIdFastingSessionsUseCase(
+    fastingSessionRepo,
+  );
+  final getFastingSessionsByProtocol = GetByProtocolIdFastingSessionsUseCase(
+    fastingSessionRepo,
+  );
+
+  final addMeal = AddMealUseCase(mealRepo);
+  final deleteMeal = DeleteMealUseCase(mealRepo);
+  final editMeal = EditMealUseCase(mealRepo);
+  final getAllMeals = GetAllMealsUseCase(mealRepo);
+  final getMealsByDay = GetByDayMealUseCase(mealRepo);
+
+  final createCustomProtocol = CreateCustomProtocolUseCase(protocolRepo);
+  final deleteCustomProtocol = DeleteCustomProtocolUseCase(protocolRepo);
+  final getAllProtocols = GetAllProtocolUseCase(protocolRepo);
   final getProtocolById = GetProtocolByIdUseCase(protocolRepo);
+
+  final calculateDailySummary = CalculateDailySummaryUseCase(
+    fastingSessionRepository: fastingSessionRepo,
+    mealRepository: mealRepo,
+  );
 
   runApp(
     MultiProvider(
       providers: [
+        Provider.value(value: getActual),
+        Provider.value(value: startSession),
+        Provider.value(value: pauseSession),
+        Provider.value(value: resumeSession),
+        Provider.value(value: endSession),
+        Provider.value(value: cancelSession),
+        Provider.value(value: deleteFastingSession),
+        Provider.value(value: getAllFastingSessions),
+        Provider.value(value: getFastingSessionById),
+        Provider.value(value: getFastingSessionsByProtocol),
+        Provider.value(value: addMeal),
+        Provider.value(value: deleteMeal),
+        Provider.value(value: editMeal),
+        Provider.value(value: getAllMeals),
+        Provider.value(value: getMealsByDay),
+        Provider.value(value: createCustomProtocol),
+        Provider.value(value: deleteCustomProtocol),
+        Provider.value(value: getAllProtocols),
+        Provider.value(value: getProtocolById),
+        Provider.value(value: calculateDailySummary),
         ChangeNotifierProvider(
           create: (_) => FastingSessionController(
             getActual,
@@ -83,10 +143,9 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.system,
-      home: const HomeScreen(),
+      home: const RootScreen(),
 
       debugShowCheckedModeBanner: false,
-      // routes: {'/': (context) => const HomeScreen()},
     );
   }
 }
