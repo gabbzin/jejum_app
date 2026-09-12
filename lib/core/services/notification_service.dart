@@ -74,8 +74,8 @@ class NotificationService {
           'jejum_timer_channel',
           'Timer de Jejum Ativo',
           channelDescription: 'Exibe o tempo decorrido do jejum em tempo real',
-          importance: Importance.high, // evita apitar/vibrar a cada atualização
-          priority: Priority.high,
+          importance: Importance.low, // evita apitar/vibrar a cada atualização
+          priority: Priority.low,
           ongoing: true, // Fixa a notificação na barra
           autoCancel: false, // Cancela automaticamente
           when: startTime.millisecondsSinceEpoch, // Base de cálculo do relógio

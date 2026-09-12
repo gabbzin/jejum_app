@@ -6,7 +6,7 @@ class GetByDayMealUseCase {
 
   GetByDayMealUseCase(this._mealRepository);
 
-  Future<List<Meal>> execute(DateTime day) {
+  Future<List<Meal>> call(DateTime day) {
     return _mealRepository.getByDay(day);
   }
 }
