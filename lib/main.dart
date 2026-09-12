@@ -29,6 +29,7 @@ import 'package:jejum_app/domain/use-cases/meal/queries/get_all.dart';
 import 'package:jejum_app/domain/use-cases/meal/queries/get_by_day.dart';
 import 'package:jejum_app/domain/use-cases/protocol/mutations/create_custom_protocol.dart';
 import 'package:jejum_app/domain/use-cases/protocol/mutations/delete_custom_protocol.dart';
+import 'package:jejum_app/domain/use-cases/protocol/mutations/edit_custom_protocol.dart';
 import 'package:jejum_app/domain/use-cases/protocol/queries/get_all.dart';
 import 'package:jejum_app/domain/use-cases/protocol/queries/get_by_id.dart';
 import 'package:jejum_app/presentation/widgets/layout/root_screen.dart';
@@ -87,6 +88,7 @@ void main() async {
   final getMealsByDay = GetByDayMealUseCase(mealRepo);
 
   final createCustomProtocol = CreateCustomProtocolUseCase(protocolRepo);
+  final editCustomProtocol = EditCustomProtocolUseCase(protocolRepo);
   final deleteCustomProtocol = DeleteCustomProtocolUseCase(protocolRepo);
   final getAllProtocols = GetAllProtocolUseCase(protocolRepo);
   final getProtocolById = GetProtocolByIdUseCase(protocolRepo);
@@ -115,6 +117,7 @@ void main() async {
         Provider.value(value: getAllMeals),
         Provider.value(value: getMealsByDay),
         Provider.value(value: createCustomProtocol),
+        Provider.value(value: editCustomProtocol),
         Provider.value(value: deleteCustomProtocol),
         Provider.value(value: getAllProtocols),
         Provider.value(value: getProtocolById),

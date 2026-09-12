@@ -48,6 +48,7 @@ class ProtocolScreenState extends State<ProtocolScreen> {
           ProtocolCards(
             isFasting: controller.isFasting,
             protocolosFuture: _protocolosFuture,
+            onChanged: refresh,
           ),
         ],
       ),
