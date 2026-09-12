@@ -45,6 +45,32 @@ void main() {
     controller.dispose();
   });
 
+  test('calculates the estimated end of the eating window', () async {
+    final startTime = DateTime(2026, 9, 12, 8);
+    final session = FastingSession(
+      id: 'session',
+      protocolId: protocol.id,
+      startTime: startTime,
+      status: FastingStatus.active,
+      targetDuration: const Duration(hours: 16),
+    );
+    final sessionRepository = InMemoryFastingSessionRepository(session);
+    final protocolRepository = InMemoryProtocolRepository(protocol);
+    final controller = FastingSessionController(
+      GetActualFastingSessionUseCase(sessionRepository),
+      StartFastingSessionUseCase(sessionRepository, protocolRepository),
+      PauseFastingSessionUseCase(sessionRepository),
+      ResumeFastingSessionUseCase(sessionRepository),
+      EndFastingSessionUseCase(sessionRepository),
+      GetProtocolByIdUseCase(protocolRepository),
+    );
+
+    await controller.init();
+
+    expect(controller.eatingWindowEndEstimated, DateTime(2026, 9, 13, 8));
+    controller.dispose();
+  });
+
   test('elapsed time excludes a current pause', () {
     final session = FastingSession(
       id: 'session',

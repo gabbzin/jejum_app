@@ -38,6 +38,14 @@ class FastingSessionController extends ChangeNotifier {
   bool get isPaused => currentSession?.status == FastingStatus.paused;
   String? get currentProtocolName => currentProtocol?.name;
 
+  DateTime? get eatingWindowEndEstimated {
+    if (currentSession == null || currentProtocol == null) return null;
+
+    return currentSession!.endTimeEstimated.add(
+      Duration(hours: currentProtocol!.eatingHours),
+    );
+  }
+
   Duration get elapsedDuration =>
       currentSession != null ? currentSession!.elapsed : Duration.zero;
 
