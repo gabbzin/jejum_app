@@ -58,6 +58,54 @@ void main() {
     expect(session.elapsed.inSeconds, inInclusiveRange(299, 301));
   });
 
+  test('estimates the end time from start and target duration', () {
+    final startTime = DateTime(2026, 9, 12, 8);
+    final session = FastingSession(
+      id: 'session',
+      protocolId: protocol.id,
+      startTime: startTime,
+      status: FastingStatus.active,
+      targetDuration: const Duration(hours: 16),
+    );
+
+    expect(session.endTimeEstimated, DateTime(2026, 9, 13));
+  });
+
+  test('includes accumulated and current pause in estimated end time', () {
+    final startTime = DateTime.now().subtract(const Duration(hours: 10));
+    final pausedAt = DateTime.now().subtract(const Duration(minutes: 5));
+    final session = FastingSession(
+      id: 'session',
+      protocolId: protocol.id,
+      startTime: startTime,
+      pausedAt: pausedAt,
+      totalPausedDuration: const Duration(minutes: 10),
+      status: FastingStatus.paused,
+      targetDuration: const Duration(hours: 16),
+    );
+    final estimatedEnd = session.endTimeEstimated;
+    final expectedEnd = startTime
+        .add(const Duration(hours: 16, minutes: 10))
+        .add(DateTime.now().difference(pausedAt));
+
+    expect(estimatedEnd.difference(expectedEnd).inSeconds.abs(), lessThan(2));
+  });
+
+  test('uses persisted pause duration for a finished session estimate', () {
+    final startTime = DateTime(2026, 9, 12, 8);
+    final session = FastingSession(
+      id: 'session',
+      protocolId: protocol.id,
+      startTime: startTime,
+      endTime: DateTime(2026, 9, 13, 1),
+      totalPausedDuration: const Duration(hours: 2),
+      status: FastingStatus.finished,
+      targetDuration: const Duration(hours: 16),
+    );
+
+    expect(session.endTimeEstimated, DateTime(2026, 9, 13, 2));
+  });
+
   test('resume adds the current pause to the total pause duration', () async {
     final session = FastingSession(
       id: 'session',

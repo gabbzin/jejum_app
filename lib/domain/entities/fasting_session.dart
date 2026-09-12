@@ -38,6 +38,16 @@ class FastingSession {
     return elapsed.isNegative ? Duration.zero : elapsed;
   }
 
+  DateTime get endTimeEstimated {
+    final currentPause = status == FastingStatus.paused && pausedAt != null
+        ? DateTime.now().difference(pausedAt!)
+        : Duration.zero;
+
+    return startTime.add(
+      targetDuration + (totalPausedDuration ?? Duration.zero) + currentPause,
+    );
+  }
+
   FastingSession copyWith({
     String? id,
     String? protocolId,
