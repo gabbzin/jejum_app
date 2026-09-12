@@ -7,6 +7,7 @@ import 'package:jejum_app/data/models/protocol_model.dart';
 import 'package:jejum_app/data/repositories/fasting_session_repository_impl.dart';
 import 'package:jejum_app/data/repositories/meal_repository_impl.dart';
 import 'package:jejum_app/data/repositories/protocol_repository_impl.dart';
+import 'package:jejum_app/data/seeds/protocol_seed.dart';
 import 'package:jejum_app/domain/use-cases/fasting_session/mutations/end_fasting.dart';
 import 'package:jejum_app/domain/use-cases/fasting_session/mutations/pause_fasting.dart';
 import 'package:jejum_app/domain/use-cases/fasting_session/mutations/resume_fasting.dart';
@@ -22,16 +23,28 @@ void main() async {
 
   await StorageService.init();
 
-  StorageService.registerAdapters([FastingSessionModelAdapter(), MealModelAdapter(), ProtocolModelAdapter()]);
+  StorageService.registerAdapters([
+    FastingSessionModelAdapter(),
+    MealModelAdapter(),
+    ProtocolModelAdapter(),
+  ]);
 
   await StorageService.openBoxes();
 
-  final fastingSessionRepo = FastingSessionRepositoryImpl(StorageService.fastingSessionBoxInstance);
+  final fastingSessionRepo = FastingSessionRepositoryImpl(
+    StorageService.fastingSessionBoxInstance,
+  );
   final mealRepo = MealRepositoryImpl(StorageService.mealBoxInstance);
-  final protocolRepo = ProtocolRepositoryImpl(StorageService.protocolBoxInstance);
+  final protocolRepo = ProtocolRepositoryImpl(
+    StorageService.protocolBoxInstance,
+  );
+  await ProtocolSeed.seed(protocolRepo);
 
   final getActual = GetActualFastingSessionUseCase(fastingSessionRepo);
-  final startSession = StartFastingSessionUseCase(fastingSessionRepo, protocolRepo);
+  final startSession = StartFastingSessionUseCase(
+    fastingSessionRepo,
+    protocolRepo,
+  );
   final endSession = EndFastingSessionUseCase(fastingSessionRepo);
   final pauseSession = PauseFastingSessionUseCase(fastingSessionRepo);
   final resumeSession = ResumeFastingSessionUseCase(fastingSessionRepo);
@@ -69,6 +82,7 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       home: const HomeScreen(),
 
+      debugShowCheckedModeBanner: false,
       // routes: {'/': (context) => const HomeScreen()},
     );
   }

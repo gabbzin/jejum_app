@@ -36,7 +36,7 @@ class FastingSessionController extends ChangeNotifier {
 
   bool get isFasting => currentSession != null;
   bool get isPaused => currentSession?.status == FastingStatus.paused;
-  String get currentProtocolName => currentProtocol?.name ?? 'Protocolo Personalizado';
+  String? get currentProtocolName => currentProtocol?.name;
 
   Duration get elapsedDuration => currentSession != null ? currentSession!.elapsed : Duration.zero;
 
