@@ -20,6 +20,7 @@ dependencies:
   collection: ^1.19.1
   uuid: ^4.6.0
   provider: ^6.1.2
+  google_fonts: ^8.2.1
 
 dev_dependencies:
   flutter_test:
@@ -33,11 +34,11 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - public/images/logo.jpeg
-    - public/images/logo_icone.png
+    - assets/images/logo.jpeg
+    - assets/images/logo_icone.png
 
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: public/images/logo.jpeg
+  image_path: assets/images/logo.jpeg
   remove_alpha_ios: true

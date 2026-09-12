@@ -1,7 +1,10 @@
 import "package:flutter/material.dart";
+import "package:google_fonts/google_fonts.dart";
 import "package:jejum_app/presentation/providers/fasting_controller.dart";
-import "package:jejum_app/presentation/widgets/protocol_name_card.dart";
-import "package:jejum_app/utils/format_remaining_duration.dart";
+import "package:jejum_app/presentation/widgets/home_screen/actions_button_timer.dart";
+import "package:jejum_app/presentation/widgets/home_screen/infos_fasting_card.dart";
+import "package:jejum_app/presentation/widgets/home_screen/protocol_name_card.dart";
+import "package:jejum_app/presentation/widgets/home_screen/timer.dart";
 import "package:provider/provider.dart";
 
 class HomeScreen extends StatefulWidget {
@@ -17,12 +20,14 @@ class _HomeScreenState extends State<HomeScreen> {
     final controller = context.watch<FastingSessionController>();
     final theme = Theme.of(context);
 
+    final elapsedDuration = controller.elapsedDuration;
+
     return Scaffold(
       appBar: AppBar(
         title: Row(
           children: [
             const Image(
-              image: AssetImage("public/images/logo_icone.png"),
+              image: AssetImage("assets/images/logo_icone.png"),
               width: 40,
               height: 40,
             ),
@@ -41,47 +46,25 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),
         child: Column(
+          spacing: 32,
           children: [
-            ProtocolNameCard(
-              protocolName: controller.currentProtocolName,
-              theme: theme,
+            ProtocolNameCard(),
+
+            Text(
+              "Em jejum há ${elapsedDuration.inHours}h e ${elapsedDuration.inMinutes % 60}min",
+              style: TextStyle(
+                fontSize: 20,
+                fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
+                fontWeight: FontWeight.w700,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ),
 
-            SizedBox(height: 20),
+            Timer(),
 
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                SizedBox(
-                  width: 200,
-                  height: 200,
-                  child: CircularProgressIndicator(
-                    value: controller.progress,
-                    strokeWidth: 16,
-                    backgroundColor: Colors.grey[300],
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                  ),
-                ),
-                Column(
-                  children: [
-                    Text("TEMPO RESTANTE"),
-                    Text(
-                      formatRemainingDuration(controller.remainingDuration),
-                      style: theme.textTheme.headlineLarge,
-                    ),
-                    Text("${(controller.progress * 100).toInt()}% concluído"),
-                  ],
-                ),
-              ],
-            ),
+            ActionsButtonTimer(),
 
-            IconButton(
-              onPressed: () async {
-                final controller = context.read<FastingSessionController>();
-                await controller.startFasting('12_12');
-              },
-              icon: const Icon(Icons.play_arrow),
-            ),
+            InfosFastingCard(),
           ],
         ),
       ),
