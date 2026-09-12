@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:jejum_app/core/services/notification_service.dart';
 import 'package:jejum_app/domain/entities/fasting_session.dart';
 import 'package:jejum_app/domain/entities/protocol.dart';
 import 'package:jejum_app/domain/use-cases/fasting_session/mutations/end_fasting.dart';
@@ -17,6 +18,8 @@ class FastingSessionController extends ChangeNotifier {
   final ResumeFastingSessionUseCase _resumeSession;
   final EndFastingSessionUseCase _endSession;
   final GetProtocolByIdUseCase _getProtocolById;
+
+  static const int _timerNotificationId = 100;
 
   FastingSession? currentSession;
   Protocol? currentProtocol;
@@ -36,11 +39,12 @@ class FastingSessionController extends ChangeNotifier {
 
   bool get isFasting => currentSession != null;
   bool get isPaused => currentSession?.status == FastingStatus.paused;
+  Duration get pausedDuration =>
+      currentSession?.totalPausedDuration ?? Duration.zero;
   String? get currentProtocolName => currentProtocol?.name;
 
   DateTime? get eatingWindowEndEstimated {
     if (currentSession == null || currentProtocol == null) return null;
-
     return currentSession!.endTimeEstimated.add(
       Duration(hours: currentProtocol!.eatingHours),
     );
@@ -67,7 +71,6 @@ class FastingSessionController extends ChangeNotifier {
 
   Future<void> _loadSessionAndProtocol() async {
     currentSession = await _getActual();
-
     if (currentSession != null) {
       currentProtocol = await _getProtocolById(currentSession!.protocolId);
     } else {
@@ -91,16 +94,41 @@ class FastingSessionController extends ChangeNotifier {
     if (currentSession != null &&
         currentSession!.status == FastingStatus.active) {
       _startTicker();
+      // Restaura a notificação se o app foi reaberto enquanto o jejum estava ativo
+      await _syncTimerNotification();
     }
 
     isLoading = false;
     notifyListeners();
   }
 
+  // Notificação flutuante com base no tempo decorrido real
+  Future<void> _syncTimerNotification() async {
+    if (currentSession == null) return;
+
+    final adjustedBaseTime = DateTime.now().subtract(currentSession!.elapsed);
+
+    await NotificationService.showFastingTimerNotification(
+      id: _timerNotificationId,
+      title: "Jejum Ativo",
+      body:
+          "Tempo restante: ${remainingDuration.inHours}h ${remainingDuration.inMinutes.remainder(60)}m",
+      startTime: adjustedBaseTime,
+    );
+  }
+
   void _startTicker() {
     _ticker?.cancel();
     _ticker = Timer.periodic(const Duration(seconds: 1), (timer) {
-      notifyListeners(); // Notifica os ouvintes a cada segundo para atualizar o tempo
+      // Verifica se a meta de tempo já foi atingida
+      if (remainingDuration == Duration.zero && currentSession != null) {
+        NotificationService.showNotification(
+          id: 101,
+          title: "Parabéns!",
+          body: "Você completou seu protocolo de jejum!",
+        );
+      }
+      notifyListeners();
     });
   }
 
@@ -109,7 +137,6 @@ class FastingSessionController extends ChangeNotifier {
     _ticker = null;
   }
 
-  // O tempo é definido lá no use case
   Future<void> startFasting(String protocolId) async {
     try {
       errorMessage = null;
@@ -118,6 +145,7 @@ class FastingSessionController extends ChangeNotifier {
 
       if (currentSession != null &&
           currentSession!.status == FastingStatus.active) {
+        await _syncTimerNotification();
         _startTicker();
       }
     } catch (e) {
@@ -130,9 +158,9 @@ class FastingSessionController extends ChangeNotifier {
   Future<void> pauseFasting() async {
     if (currentSession == null) return;
     await _pauseSession();
-
     await _loadSessionAndProtocol();
 
+    await NotificationService.stopTimerNotification(_timerNotificationId);
     _stopTicker();
     notifyListeners();
   }
@@ -140,11 +168,11 @@ class FastingSessionController extends ChangeNotifier {
   Future<void> resumeFasting() async {
     if (currentSession == null) return;
     await _resumeSession();
-
     await _loadSessionAndProtocol();
 
     if (currentSession != null &&
         currentSession!.status == FastingStatus.active) {
+      await _syncTimerNotification();
       _startTicker();
     }
 
@@ -155,6 +183,7 @@ class FastingSessionController extends ChangeNotifier {
     if (currentSession == null) return;
     await _endSession();
 
+    await NotificationService.stopTimerNotification(_timerNotificationId);
     currentSession = null;
     currentProtocol = null;
 

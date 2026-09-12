@@ -10,6 +10,11 @@ class MealsScreen extends StatefulWidget {
 class _MealsScreenState extends State<MealsScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return const SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(children: [Text("Refeições")]),
+      ),
+    );
   }
 }

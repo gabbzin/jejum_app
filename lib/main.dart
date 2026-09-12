@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jejum_app/core/services/notification_service.dart';
 import 'package:jejum_app/core/services/storage_service.dart';
 import 'package:jejum_app/core/theme/app_theme.dart';
 import 'package:jejum_app/data/models/fasting_session_model.dart';
@@ -37,6 +38,7 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await NotificationService.init();
   await StorageService.init();
 
   StorageService.registerAdapter<FastingSessionModel>(

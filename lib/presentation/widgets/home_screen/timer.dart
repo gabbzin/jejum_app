@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jejum_app/presentation/providers/fasting_controller.dart';
-import 'package:jejum_app/utils/format_remaining_duration.dart';
+import 'package:jejum_app/utils/formatters/format_remaining_duration.dart';
 import 'package:provider/provider.dart';
 
 class Timer extends StatelessWidget {

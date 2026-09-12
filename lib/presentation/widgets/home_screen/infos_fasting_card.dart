@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jejum_app/presentation/providers/fasting_controller.dart';
+import 'package:jejum_app/utils/formatters/format_paused_time.dart';
+import 'package:jejum_app/utils/formatters/format_remaining_duration.dart';
 import 'package:provider/provider.dart';
 
 class InfosFastingCard extends StatelessWidget {
@@ -28,12 +30,12 @@ class InfosFastingCard extends StatelessWidget {
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      spacing: 16,
+      spacing: 4,
       children: [
         Expanded(
           child: InfoCard(
             icon: Icons.sunny,
-            title: "Início do jejum",
+            title: "Início",
             value: formatDateTime(fastingStartTime),
           ),
         ),
@@ -42,6 +44,13 @@ class InfosFastingCard extends StatelessWidget {
             icon: Icons.flag,
             title: "Meta final",
             value: formatDateTime(fastingEndTimeEstimated),
+          ),
+        ),
+        Expanded(
+          child: InfoCard(
+            icon: Icons.info,
+            title: "Pausa",
+            value: formatPausedTime(controller.pausedDuration),
           ),
         ),
       ],
@@ -72,7 +81,9 @@ class InfoCard extends StatelessWidget {
           spacing: 4,
           children: [
             Row(
-              spacing: 8,
+              spacing: 4,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Icon(icon, size: 16, color: theme.colorScheme.primary),
                 Text(title),
@@ -81,7 +92,6 @@ class InfoCard extends StatelessWidget {
 
             Text(
               value,
-              textAlign: TextAlign.start,
               style: TextStyle(
                 fontSize: theme.textTheme.titleLarge?.fontSize,
                 fontWeight: FontWeight.bold,
