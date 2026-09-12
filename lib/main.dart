@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jejum_app/core/services/storage_service.dart';
 import 'package:jejum_app/core/theme/app_theme.dart';
 import 'package:jejum_app/data/models/fasting_session_model.dart';
+import 'package:jejum_app/data/models/fasting_status_adapter.dart';
 import 'package:jejum_app/data/models/meal_model.dart';
 import 'package:jejum_app/data/models/protocol_model.dart';
 import 'package:jejum_app/data/repositories/fasting_session_repository_impl.dart';
@@ -25,6 +26,7 @@ void main() async {
 
   StorageService.registerAdapters([
     FastingSessionModelAdapter(),
+    FastingStatusAdapter(),
     MealModelAdapter(),
     ProtocolModelAdapter(),
   ]);
@@ -76,7 +78,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Jejum+',
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.system,

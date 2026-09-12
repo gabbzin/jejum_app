@@ -20,12 +20,15 @@ class StartFastingSessionUseCase {
     }
 
     final protocol = await _protocolRepository.getById(protocolId);
+    if (protocol == null) {
+      throw ArgumentError('Protocolo de jejum não encontrado.');
+    }
 
     final session = FastingSession(
       id: const UuidV4().toString(),
       protocolId: protocolId,
       startTime: DateTime.now(),
-      targetDuration: Duration(hours: protocol?.fastingHours ?? 0),
+      targetDuration: Duration(hours: protocol.fastingHours),
       status: FastingStatus.active,
     );
 

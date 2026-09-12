@@ -28,7 +28,15 @@ class FastingSession {
 
   static const _unset = _Unset();
 
-  Duration get elapsed => (endTime ?? DateTime.now()).difference(startTime);
+  Duration get elapsed {
+    final effectiveEnd = status == FastingStatus.paused && pausedAt != null
+        ? pausedAt!
+        : (endTime ?? DateTime.now());
+    final elapsed =
+        effectiveEnd.difference(startTime) -
+        (totalPausedDuration ?? Duration.zero);
+    return elapsed.isNegative ? Duration.zero : elapsed;
+  }
 
   FastingSession copyWith({
     String? id,

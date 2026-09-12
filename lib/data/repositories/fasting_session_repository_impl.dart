@@ -50,8 +50,9 @@ class FastingSessionRepositoryImpl implements FastingSessionRepository {
   @override
   Future<FastingSession?> getActual() async {
     final actual = _box.values.firstWhereOrNull(
-      // ignore: unrelated_type_equality_checks
-      (element) => element.status == FastingStatus.active.name,
+      (element) =>
+          element.status == FastingStatus.active ||
+          element.status == FastingStatus.paused,
     );
 
     return actual != null ? FastingSessionMapper.toEntity(actual) : null;

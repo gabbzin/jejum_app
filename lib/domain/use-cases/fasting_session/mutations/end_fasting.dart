@@ -20,9 +20,15 @@ class EndFastingSessionUseCase {
       );
     }
 
+    final now = DateTime.now();
+    final currentPause = session.pausedAt == null
+        ? Duration.zero
+        : now.difference(session.pausedAt!);
     final updatedSession = session.copyWith(
-      endTime: DateTime.now(),
+      endTime: now,
       pausedAt: null,
+      totalPausedDuration:
+          (session.totalPausedDuration ?? Duration.zero) + currentPause,
       status: FastingStatus.finished,
     );
 

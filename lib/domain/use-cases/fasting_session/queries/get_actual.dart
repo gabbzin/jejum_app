@@ -1,8 +1,8 @@
-import 'package:jejum_app/data/repositories/fasting_session_repository_impl.dart';
 import 'package:jejum_app/domain/entities/fasting_session.dart';
+import 'package:jejum_app/domain/repositories/fasting_session_repository.dart';
 
 class GetActualFastingSessionUseCase {
-  final FastingSessionRepositoryImpl _repository;
+  final FastingSessionRepository _repository;
 
   GetActualFastingSessionUseCase(this._repository);
 

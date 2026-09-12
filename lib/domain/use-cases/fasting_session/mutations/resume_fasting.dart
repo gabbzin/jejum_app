@@ -16,12 +16,17 @@ class ResumeFastingSessionUseCase {
       throw Exception('O status não está pausado');
     }
 
+    final pausedAt = session.pausedAt;
+    if (pausedAt == null) {
+      throw Exception('Sessão pausada sem horário de pausa');
+    }
+
     final updatedSession = session.copyWith(
       status: FastingStatus.active,
       pausedAt: null,
       totalPausedDuration:
-          session.totalPausedDuration ??
-          Duration.zero + DateTime.now().difference(session.pausedAt!),
+          (session.totalPausedDuration ?? Duration.zero) +
+          DateTime.now().difference(pausedAt),
     );
     await _repository.save(updatedSession);
   }

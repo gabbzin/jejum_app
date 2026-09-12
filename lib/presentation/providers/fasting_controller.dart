@@ -38,7 +38,8 @@ class FastingSessionController extends ChangeNotifier {
   bool get isPaused => currentSession?.status == FastingStatus.paused;
   String? get currentProtocolName => currentProtocol?.name;
 
-  Duration get elapsedDuration => currentSession != null ? currentSession!.elapsed : Duration.zero;
+  Duration get elapsedDuration =>
+      currentSession != null ? currentSession!.elapsed : Duration.zero;
 
   Duration get remainingDuration {
     if (currentSession == null) return Duration.zero;
@@ -47,15 +48,17 @@ class FastingSessionController extends ChangeNotifier {
   }
 
   double get progress {
-    if (currentSession == null || currentSession!.targetDuration.inSeconds == 0) {
+    if (currentSession == null ||
+        currentSession!.targetDuration.inSeconds == 0) {
       return 0;
     }
-    final progress = elapsedDuration.inSeconds / currentSession!.targetDuration.inSeconds;
+    final progress =
+        elapsedDuration.inSeconds / currentSession!.targetDuration.inSeconds;
     return progress.clamp(0.0, 1.0);
   }
 
   Future<void> _loadSessionAndProtocol() async {
-    await _getActual();
+    currentSession = await _getActual();
 
     if (currentSession != null) {
       currentProtocol = await _getProtocolById(currentSession!.protocolId);
@@ -77,7 +80,8 @@ class FastingSessionController extends ChangeNotifier {
 
     await _loadSessionAndProtocol();
 
-    if (currentSession != null && currentSession!.status == FastingStatus.active) {
+    if (currentSession != null &&
+        currentSession!.status == FastingStatus.active) {
       _startTicker();
     }
 
@@ -104,7 +108,8 @@ class FastingSessionController extends ChangeNotifier {
       await _startSession(protocolId: protocolId);
       await _loadSessionAndProtocol();
 
-      if (currentSession != null && currentSession!.status == FastingStatus.active) {
+      if (currentSession != null &&
+          currentSession!.status == FastingStatus.active) {
         _startTicker();
       }
     } catch (e) {
@@ -130,7 +135,8 @@ class FastingSessionController extends ChangeNotifier {
 
     await _loadSessionAndProtocol();
 
-    if (currentSession != null && currentSession!.status == FastingStatus.active) {
+    if (currentSession != null &&
+        currentSession!.status == FastingStatus.active) {
       _startTicker();
     }
 
