@@ -25,8 +25,9 @@ class ProtocolRepositoryImpl implements ProtocolRepository {
 
   @override
   Future<Protocol?> getByName(String name) async {
+    final normalized = name.trim().toLowerCase();
     final protocol = _box.values.firstWhereOrNull(
-      (element) => element.name == name,
+      (element) => element.name.trim().toLowerCase() == normalized,
     );
     return protocol != null ? ProtocolMapper.toEntity(protocol) : null;
   }

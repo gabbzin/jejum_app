@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jejum_app/presentation/screens/home_screen.dart';
 import 'package:jejum_app/presentation/screens/meals_screen.dart';
 import 'package:jejum_app/presentation/screens/protocol_screen.dart';
+import 'package:jejum_app/presentation/widgets/dialogs/protocol_dialog.dart';
 
 class RootScreen extends StatefulWidget {
   const RootScreen({super.key});
@@ -13,11 +14,41 @@ class RootScreen extends StatefulWidget {
 class _RootScreenState extends State<RootScreen> {
   int _selectedIndex = 0;
 
-  final _screens = [
-    const HomeScreen(),
-    const MealsScreen(),
-    const ProtocolScreen(),
-  ];
+  final _protocolScreenKey = GlobalKey<ProtocolScreenState>();
+
+  late final List<Widget> _screens;
+
+  @override
+  void initState() {
+    super.initState();
+    _screens = [
+      const HomeScreen(),
+      const MealsScreen(),
+      ProtocolScreen(key: _protocolScreenKey),
+    ];
+  }
+
+  Widget? _buildFab() {
+    switch (_selectedIndex) {
+      case 1: // Refeições
+        return FloatingActionButton(
+          onPressed: () {},
+          child: const Icon(Icons.add),
+        );
+      case 2: // Protocolos
+        return FloatingActionButton(
+          onPressed: () async {
+            final created = await showAddProtocolDialog(context);
+            if (created == true) {
+              _protocolScreenKey.currentState?.refresh();
+            }
+          },
+          child: const Icon(Icons.add),
+        );
+      default:
+        return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +93,8 @@ class _RootScreenState extends State<RootScreen> {
           ),
         ],
       ),
+
+      floatingActionButton: _buildFab(),
     );
   }
 }

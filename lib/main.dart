@@ -31,7 +31,7 @@ import 'package:jejum_app/domain/use-cases/protocol/mutations/create_custom_prot
 import 'package:jejum_app/domain/use-cases/protocol/mutations/delete_custom_protocol.dart';
 import 'package:jejum_app/domain/use-cases/protocol/queries/get_all.dart';
 import 'package:jejum_app/domain/use-cases/protocol/queries/get_by_id.dart';
-import 'package:jejum_app/presentation/layout/root_screen.dart';
+import 'package:jejum_app/presentation/widgets/layout/root_screen.dart';
 import 'package:jejum_app/presentation/providers/fasting_controller.dart';
 import 'package:provider/provider.dart';
 
