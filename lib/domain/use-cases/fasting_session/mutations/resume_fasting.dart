@@ -28,6 +28,7 @@ class ResumeFastingSessionUseCase {
           (session.totalPausedDuration ?? Duration.zero) +
           DateTime.now().difference(pausedAt),
     );
+
     await _repository.save(updatedSession);
   }
 }

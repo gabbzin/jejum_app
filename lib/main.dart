@@ -9,6 +9,7 @@ import 'package:jejum_app/data/repositories/fasting_session_repository_impl.dart
 import 'package:jejum_app/data/repositories/meal_repository_impl.dart';
 import 'package:jejum_app/data/repositories/protocol_repository_impl.dart';
 import 'package:jejum_app/data/seeds/protocol_seed.dart';
+import 'package:jejum_app/domain/entities/fasting_session.dart';
 import 'package:jejum_app/domain/use-cases/fasting_session/mutations/end_fasting.dart';
 import 'package:jejum_app/domain/use-cases/fasting_session/mutations/pause_fasting.dart';
 import 'package:jejum_app/domain/use-cases/fasting_session/mutations/resume_fasting.dart';
@@ -24,12 +25,12 @@ void main() async {
 
   await StorageService.init();
 
-  StorageService.registerAdapters([
+  StorageService.registerAdapter<FastingSessionModel>(
     FastingSessionModelAdapter(),
-    FastingStatusAdapter(),
-    MealModelAdapter(),
-    ProtocolModelAdapter(),
-  ]);
+  );
+  StorageService.registerAdapter<FastingStatus>(FastingStatusAdapter());
+  StorageService.registerAdapter<MealModel>(MealModelAdapter());
+  StorageService.registerAdapter<ProtocolModel>(ProtocolModelAdapter());
 
   await StorageService.openBoxes();
 

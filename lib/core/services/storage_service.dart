@@ -16,11 +16,9 @@ class StorageService {
     await Hive.initFlutter();
   }
 
-  static void registerAdapters(List<TypeAdapter<dynamic>> adapters) {
-    for (var adapter in adapters) {
-      if (!Hive.isAdapterRegistered(adapter.typeId)) {
-        Hive.registerAdapter(adapter);
-      }
+  static void registerAdapter<T>(TypeAdapter<T> adapter) {
+    if (!Hive.isAdapterRegistered(adapter.typeId)) {
+      Hive.registerAdapter<T>(adapter);
     }
   }
 
